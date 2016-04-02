@@ -1,0 +1,4 @@
+-cp tests
+-main RunTests
+-cp src
+-neko bin/tests.n

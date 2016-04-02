@@ -1,0 +1,5 @@
+{
+  "name": "jsonwebtoken",
+  "classPath": "./src",
+  "dependencies": {}
+}
