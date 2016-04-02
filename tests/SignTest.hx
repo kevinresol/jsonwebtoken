@@ -191,19 +191,19 @@ class SignTest extends TestCase
 	{
 		if(Std.is(expected, Array))
 		{
-			assertTrue(Std.is(actual, Array));
-			assertEquals(expected.length, actual.length);
-			for(e in (expected:Array<Dynamic>)) assertTrue((actual:Array<Dynamic>).indexOf(e) != -1);
+			assertTrue(Std.is(actual, Array), pos);
+			assertEquals(expected.length, actual.length, pos);
+			for(e in (expected:Array<Dynamic>)) assertTrue((actual:Array<Dynamic>).indexOf(e) != -1, pos);
 		}
 		else if(Reflect.isObject(expected) && Type.typeof(expected) == TObject)
 		{
-			assertTrue(Reflect.isObject(actual) && Type.typeof(actual) == TObject);
-			assertEquals(Reflect.fields(expected).length, Reflect.fields(actual).length);
-			for(field in Reflect.fields(expected)) compare(Reflect.field(expected, field), Reflect.field(actual, field));
+			assertTrue(Reflect.isObject(actual) && Type.typeof(actual) == TObject, pos);
+			assertEquals(Reflect.fields(expected).length, Reflect.fields(actual).length, pos);
+			for(field in Reflect.fields(expected)) compare(Reflect.field(expected, field), Reflect.field(actual, field), pos);
 		}
 		else
 		{
-			assertEquals(expected, actual);
+			assertEquals(expected, actual, pos);
 		}
 	}
 }
