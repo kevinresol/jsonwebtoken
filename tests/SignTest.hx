@@ -110,7 +110,7 @@ class SignTest extends TestCase
 	
 	function testSignNullEqualsMissing()
 	{
-		var token = signer.sign({abc: null, def: null});
+		var token = signer.sign({abc: null, bcd: null});
 		var segments = token.split('.');
 		assertEncoded({alg: "HS256", typ: "JWT"}, segments[0]);
 		assertEncoded({}, segments[1]);

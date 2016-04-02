@@ -10,6 +10,11 @@ class RunTests
 		t.add(new GeneralTest());
 		t.add(new VerifyTest());
 		t.add(new SignTest());
-		if(!t.run()) Sys.exit(500);
+		if(!t.run()) 
+		{
+			#if sys
+			Sys.exit(500);
+			#end
+		}
 	}
 }
