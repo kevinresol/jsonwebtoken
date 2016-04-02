@@ -1,5 +1,12 @@
 {
-  "name": "jsonwebtoken",
-  "classPath": "./src",
-  "dependencies": {}
+    "name": "jsonwebtoken",
+    "url": "https://github.com/kevinresol/jsonwebtoken",
+    "license": "MIT",
+    "classPath": "src",
+    "tags": ["cross", "jsonwebtoken"],
+    "description": "Haxe implementation of JsonWebToken",
+    "releasenote": "Initial release",
+    "version": "1.0.0",
+    "contributors": ["kevinresol"],
+    "dependencies": {}
 }

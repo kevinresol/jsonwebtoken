@@ -11,6 +11,12 @@ Tested Targets:
 - C++
 - C# (Fails on Haxe 3.2.1. Passes on Haxe development)
 - PHP (Fails if encoded object is an empty one (`{}`), see https://github.com/HaxeFoundation/haxe/issues/5015)
+	
+# Install
+
+```
+haxelib install jsonwebtoken
+```
 
 # Usage
 
