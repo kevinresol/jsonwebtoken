@@ -8,13 +8,13 @@ using haxe.Json;
 
 class TestCaseBase extends TestCase
 {
-	function assertException(expected:JsonWebTokenError, fn:Void->Void)
+	function assertException(expected:JsonWebTokenError, fn:Void->Void, ?pos:haxe.PosInfos)
 	{
 		try {
 			fn();
-			assertTrue(false);
+			assertTrue(false, pos);
 		} catch(e:JsonWebTokenError)
-			assertEquals(expected, e);
+			assertEquals(expected, e, pos);
 	}
 	
 	function assertEncoded(expected:{}, encoded:String, ?pos:haxe.PosInfos)
