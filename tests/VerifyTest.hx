@@ -2,11 +2,10 @@ package;
 
 import jsonwebtoken.JsonWebToken;
 import jsonwebtoken.JsonWebTokenError;
-import haxe.unit.TestCase;
 import haxe.crypto.Base64;
 
 @:access(jsonwebtoken.JsonWebToken)
-class VerifyTest extends TestCase
+class VerifyTest extends TestCaseBase
 {
 	var jwt:JsonWebToken;
 	
@@ -17,20 +16,20 @@ class VerifyTest extends TestCase
 	
 	function testFailOnInvalidNumberOfSegments()
 	{
-		try jwt.verify('abc') catch(e:JsonWebTokenError) assertEquals(EInvalidNumberOfSegments, e);
-		try jwt.verify('abc.abc') catch(e:JsonWebTokenError) assertEquals(EInvalidNumberOfSegments, e);
-		try jwt.verify('abc.abc.abc.abc') catch(e:JsonWebTokenError) assertEquals(EInvalidNumberOfSegments, e);
-		try jwt.verify('abc.abc.abc.abc.abc') catch(e:JsonWebTokenError) assertEquals(EInvalidNumberOfSegments, e);
+		assertException(EInvalidNumberOfSegments, jwt.verify.bind('abc'));
+		assertException(EInvalidNumberOfSegments, jwt.verify.bind('abc.abc'));
+		assertException(EInvalidNumberOfSegments, jwt.verify.bind('abc.abc.abc.abc'));
+		assertException(EInvalidNumberOfSegments, jwt.verify.bind('abc.abc.abc.abc.abc'));
 	}
 
 	function testFailOnEmptyStringToken()
 	{
-		try jwt.verify('') catch(e:JsonWebTokenError) assertEquals(ETokenNotSet, e);
+		assertException(ETokenNotSet, jwt.verify.bind(''));
 	}
 	
 	function testFailOnNullToken()
 	{
-		try jwt.verify(null) catch(e:JsonWebTokenError) assertEquals(ETokenNotSet, e);
+		assertException(ETokenNotSet, jwt.verify.bind(null));
 	}
 	// 
 	// @Test(expected = IllegalStateException.class)
@@ -52,7 +51,7 @@ class VerifyTest extends TestCase
 	{
 		var token = "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.suchsignature_plzvalidate_zomgtoken";
 		var secret = "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow";
-		try new JsonWebToken(secret).verifySignature(token.split('.')) catch(e:JsonWebTokenError) assertEquals(EInvalidSignature, e);
+		assertException(EInvalidSignature, new JsonWebToken(secret).verifySignature.bind(token.split('.')));
 	}
 	
 	function testVerifySignature()
@@ -73,14 +72,14 @@ class VerifyTest extends TestCase
 	function testFailOnUnmatchedAlgorithm()
 	{
 		var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.4BjJWnO3nkNiYiR1ECGmMnsrLzpTm4l0zvYWpiPAtKw";
-		try jwt.verify(token, {algorithm: HS384}) catch(e:JsonWebTokenError) assertEquals(EUnmatchedAlgorithm, e);
+		assertException(EUnmatchedAlgorithm, jwt.verify.bind(token, {algorithm: HS384}));
 	}
 	
 	function testFailWhenExpired()
 	{
 		var time = Std.int(Date.now().getTime() / 1000 - 5000);
-		try jwt.verifyExpiration('$time') catch(e:JsonWebTokenError) assertEquals(EExpired, e);
-		try jwt.verifyExpiration(time) catch(e:JsonWebTokenError) assertEquals(EExpired, e);
+		assertException(EExpired, jwt.verifyExpiration.bind('$time'));
+		assertException(EExpired, jwt.verifyExpiration.bind(time));
 	}
 	
 	function testVerifyExpiration()
@@ -100,8 +99,8 @@ class VerifyTest extends TestCase
 	
 	function testFailIssuer()
 	{
-		try jwt.verifyIssuer(['very issue'], 'very issuer') catch(e:JsonWebTokenError) assertEquals(EInvalidIssuer, e);
-		try jwt.verifyIssuer(['very issue', 'abc'], 'very issuer') catch(e:JsonWebTokenError) assertEquals(EInvalidIssuer, e);
+		assertException(EInvalidIssuer, jwt.verifyIssuer.bind(['very issue'], 'very issuer'));
+		assertException(EInvalidIssuer, jwt.verifyIssuer.bind(['very issue', 'abc'], 'very issuer'));
 	}
 	
 	function testVerifyIssuerWhenNotFoundInClaimsSet()
@@ -118,7 +117,7 @@ class VerifyTest extends TestCase
 	
 	function testFailAudience()
 	{
-		try jwt.verifyAudience('amazing audienc', 'amazing audience') catch(e:JsonWebTokenError) assertEquals(EInvalidAudience, e);
+		assertException(EInvalidAudience, jwt.verifyAudience.bind('amazing audienc', 'amazing audience'));
 	}
 	
 	function testVerifyAudienceWhenNotFoundInClaimsSet()
@@ -135,7 +134,7 @@ class VerifyTest extends TestCase
 	
 	function testFailArrayAudience()
 	{
-		try jwt.verifyAudience('amazing audience', ['foo']) catch(e:JsonWebTokenError) assertEquals(EInvalidAudience, e);
-		try jwt.verifyAudience('amazing audience', ['foo', 'bar']) catch(e:JsonWebTokenError) assertEquals(EInvalidAudience, e);
+		assertException(EInvalidAudience, jwt.verifyAudience.bind('amazing audience', ['foo']));
+		assertException(EInvalidAudience, jwt.verifyAudience.bind('amazing audience', ['foo', 'bar']));
 	}
 }

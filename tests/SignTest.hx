@@ -1,13 +1,10 @@
 package;
 
 import jsonwebtoken.JsonWebToken;
-import haxe.unit.TestCase;
 
-using haxe.crypto.Base64;
-using haxe.Json;
 
 @:access(jsonwebtoken.JsonWebToken)
-class SignTest extends TestCase
+class SignTest extends TestCaseBase
 {
 	var signer:JsonWebToken;
 	
@@ -182,28 +179,5 @@ class SignTest extends TestCase
 	// 	assertEquals("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.e30.11MgCe-_uiheyy_kARCwhSZbeq3IkMn40GLQkczQ4Bjn_lkCYfSeqz0HeeYpitksiQ2bW47N0oGKCOYOlmQPyg", token);
 	// }
 	
-	function assertEncoded(expected:{}, encoded:String, ?pos:haxe.PosInfos)
-	{
-		compare(expected, encoded.decode().toString().parse(), pos);
-	}
 	
-	function compare(expected:Dynamic, actual:Dynamic, ?pos:haxe.PosInfos)
-	{
-		if(Std.is(expected, Array))
-		{
-			assertTrue(Std.is(actual, Array), pos);
-			assertEquals(expected.length, actual.length, pos);
-			for(e in (expected:Array<Dynamic>)) assertTrue((actual:Array<Dynamic>).indexOf(e) != -1, pos);
-		}
-		else if(Reflect.isObject(expected) && Type.typeof(expected) == TObject)
-		{
-			assertTrue(Reflect.isObject(actual) && Type.typeof(actual) == TObject, pos);
-			assertEquals(Reflect.fields(expected).length, Reflect.fields(actual).length, pos);
-			for(field in Reflect.fields(expected)) compare(Reflect.field(expected, field), Reflect.field(actual, field), pos);
-		}
-		else
-		{
-			assertEquals(expected, actual, pos);
-		}
-	}
 }
