@@ -2,7 +2,7 @@
 Haxe implementation of JsonWebToken
 
 
-Tested Targets: 
+##### Tested Targets:
 - Neko
 - Python
 - (Node)JS
@@ -11,6 +11,24 @@ Tested Targets:
 - C++
 - C# (Fails on Haxe 3.2.1. Passes on Haxe development)
 - PHP (Fails if encoded object is an empty one (`{}`), see https://github.com/HaxeFoundation/haxe/issues/5015)
+	
+	
+##### Algorithms
+
+|Algorithm|Status|
+|--|--|
+|HS256|Supported|
+|HS384|Not supported|
+|HS512|Not supported|
+|RS256|Not supported|
+|RS384|Not supported|
+|RS512|Not supported|
+
+##### Supported Verifications
+
+- Issuer
+- Audience
+- Expiry
 	
 # Install
 
