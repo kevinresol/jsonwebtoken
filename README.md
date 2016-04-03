@@ -15,14 +15,16 @@ Haxe implementation of JsonWebToken
 	
 ##### Algorithms
 
+
 |Algorithm|Status|
-|--|--|
+|---|---|
 |HS256|Supported|
 |HS384|Not supported|
 |HS512|Not supported|
 |RS256|Not supported|
 |RS384|Not supported|
 |RS512|Not supported|
+
 
 ##### Supported Verifications
 
