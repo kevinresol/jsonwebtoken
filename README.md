@@ -1,4 +1,4 @@
-# jsonwebtoken ![travis](https://travis-ci.org/kevinresol/jsonwebtoken.svg?branch=master)
+# jsonwebtoken [![Build Status](https://travis-ci.org/kevinresol/jsonwebtoken.svg?branch=master)](https://travis-ci.org/kevinresol/jsonwebtoken)
 Haxe implementation of JsonWebToken
 
 
