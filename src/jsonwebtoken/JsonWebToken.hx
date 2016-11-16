@@ -14,6 +14,14 @@ class JsonWebToken
 	static var DEFAULT_ALGORITHM:Algorithm = HS256;
 	var secret:Secret;
 	
+	
+	/**
+		Decode without verifying
+	**/
+	public static function decode<T>(token:String):T {
+		return cast _decode(token).payload;
+	}
+	
 	public function new(secret:Secret)
 	{
 		if(secret == null || secret.length == 0) throw ESecretNotSet;
@@ -40,26 +48,32 @@ class JsonWebToken
 	
 	public function verify<T>(token:String, ?options:VerifyOptions):T
 	{
-		if(token == null || token == "") throw ETokenNotSet;
 		if(options == null) options = {};
+		var decoded = _decode(token);
 		
+		// verify algorithm
+		var algorithm:Algorithm = decoded.header.alg;
+		if(options.algorithm != null && options.algorithm != algorithm) throw EUnmatchedAlgorithm;
+		
+		verifySignature(decoded.pieces, algorithm);
+		verifyExpiration(decoded.payload.exp);
+		verifyIssuer(options.issuers, decoded.payload.iss);
+		verifyAudience(options.audience, decoded.payload.aud);
+		
+		return cast decoded.payload;
+	}
+		
+	static function _decode(token:String) {
+		if(token == null || token == "") throw ETokenNotSet;
 		token = token.replace('-','+').replace('_','/');
 		var pieces = token.split('.');
 		if(pieces.length != 3) throw EInvalidNumberOfSegments;
-		
-		var header = pieces[0].decode().toString().parse();
-		
-		// verify algorithm
-		var algorithm:Algorithm = header.alg;
-		if(options.algorithm != null && options.algorithm != algorithm) throw EUnmatchedAlgorithm;
-		var payload:Dynamic = pieces[1].decode().toString().parse();
-		
-		verifySignature(pieces, algorithm);
-		verifyExpiration(payload.exp);
-		verifyIssuer(options.issuers, payload.iss);
-		verifyAudience(options.audience, payload.aud);
-		
-		return cast payload;
+		return {
+			pieces: pieces,
+			header: pieces[0].decode().toString().parse(),
+			payload: pieces[1].decode().toString().parse(),
+			signature: pieces[2],
+		}
 	}
 	
 	function encodeHeader(algorithm:Algorithm)
