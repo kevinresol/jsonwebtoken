@@ -1,4 +1,5 @@
--cp tests
--main RunTests
--cp src
+tests.hxml
 -neko bin/tests.n
+
+-lib travix
+-lib jsonwebtoken

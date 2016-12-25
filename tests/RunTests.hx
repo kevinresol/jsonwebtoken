@@ -1,21 +1,13 @@
 package;
 
-import haxe.unit.TestRunner;
-
-#if flash
-import flash.system.System.exit;
-#else
-import Sys.exit;
-#end
+import tink.unit.TestRunner;
 
 class RunTests
 {
 	static function main()
 	{
-		var t = new TestRunner();
-		t.add(new GeneralTest());
-		t.add(new VerifyTest());
-		t.add(new SignTest());
-		exit(t.run() ? 0 : 500);
+		TestRunner.run([
+			new SignTest(),
+		]).handle(function(o) travix.Logger.exit(o.errors));
 	}
 }
