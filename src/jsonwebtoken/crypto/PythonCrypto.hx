@@ -14,7 +14,7 @@ class PythonCrypto implements Crypto {
 	
 	public function new() {}
 	
-	public function encode(input:String, algorithm:Algorithm):Promise<String> {
+	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
 		function _hmac(alg:Void->Hashlib, key:Secret) {
 			var digest = Hmac.new_(key.getData(), {msg: Bytes.ofString(input).getData(), digestmod: alg}).digest();

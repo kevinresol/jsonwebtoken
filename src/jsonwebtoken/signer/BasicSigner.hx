@@ -30,6 +30,6 @@ class BasicSigner implements Signer {
 		var payload = Codec.encodeSegment(claims);
 		var input = '$header.$payload';
 		
-		return crypto.encode(input, algorithm).next(function(sig) return '$input.$sig');
+		return crypto.sign(input, algorithm).next(function(sig) return '$input.$sig');
 	}
 }

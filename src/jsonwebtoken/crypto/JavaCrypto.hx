@@ -16,7 +16,7 @@ class JavaCrypto implements Crypto {
 	
 	public function new() {}
 	
-	public function encode(input:String, algorithm:Algorithm):Promise<String> {
+	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
 		function _hmac(alg:String, key:Secret) {
 			return try {

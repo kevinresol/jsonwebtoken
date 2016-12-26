@@ -5,5 +5,5 @@ import jsonwebtoken.Algorithm;
 using tink.CoreApi;
 
 interface Crypto {
-	function encode(input:String, algorithm:Algorithm):Promise<String>;
+	function sign(input:String, algorithm:Algorithm):Promise<String>;
 }
