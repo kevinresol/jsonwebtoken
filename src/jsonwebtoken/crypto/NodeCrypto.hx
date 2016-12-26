@@ -1,30 +1,33 @@
-package jsonwebtoken.signers;
+package jsonwebtoken.crypto;
 
 import jsonwebtoken.Algorithm;
-import js.node.Crypto;
+import js.node.Crypto.*;
+import js.node.Buffer;
 
-using StringTools;
+using jsonwebtoken.Codec;
 using tink.CoreApi;
 
 @:require(nodejs)
-class NodeSigner extends BasicSigner {
-	override function encodeSignature(input:String, algorithm:Algorithm):Outcome<String, Error> {
-		
-		function _hmac(alg:String, key:String) {
+class NodeCrypto implements Crypto {
+	
+	public function new() {}
+	
+	public function encode(input:String, algorithm:Algorithm):Promise<String> {
+		function _hmac(alg:String, key:Buffer) {
 			if(key == null) return Failure(new Error('Secret Missing'));
-			var hmac = Crypto.createHmac(alg, key);
+			var hmac = createHmac(alg, key);
 			hmac.update(input);
-			return Success(hmac.digest('base64').replace('+', '-').replace('/', '_').replace('=', ''));
+			return Success(hmac.digest('base64').sanitize());
 		}
 		
 		function _sign(alg:String, keys:Keys) {
-			var sign = Crypto.createSign(alg);
+			var sign = createSign(alg);
 			sign.update(input);
 			return Success(sign.sign(switch keys {
 				case {privateKey: null}: return Failure(new Error('Private Key Missing'));
 				case {privateKey: key, passcode: null}: key;
 				case {privateKey: key, passcode: pass}: cast {key: key, passphrase: pass}; // FIXME: remove cast - https://github.com/HaxeFoundation/hxnodejs/pull/86
-			}, 'base64').replace('+', '-').replace('/', '_').replace('=', ''));
+			}, 'base64').sanitize());
 		}
 		
 		return switch algorithm {

@@ -1,10 +1,11 @@
 package;
 
 import jsonwebtoken.Algorithm;
-import jsonwebtoken.signers.*;
+import jsonwebtoken.signer.*;
+import jsonwebtoken.crypto.*;
 import tink.unit.Assert.*;
 
-class SignTest {
+class SignerTest {
 	
 	static var PUBLIC_KEY = '-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA33TqqLR3eeUmDtHS89qF
@@ -99,6 +100,6 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 	}
 	
 	function getSigner(alg:Algorithm) {
-		return new StdSigner(alg);
+		return new BasicSigner(alg, new NodeCrypto());
 	}
 }

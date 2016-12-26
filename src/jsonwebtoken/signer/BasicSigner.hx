@@ -1,8 +1,9 @@
-package jsonwebtoken.signers;
+package jsonwebtoken.signer;
 
 import haxe.crypto.Hmac;
 import jsonwebtoken.Signer;
 import jsonwebtoken.Codec;
+import jsonwebtoken.Crypto;
 
 using jsonwebtoken.Algorithm;
 using haxe.io.Bytes;
@@ -13,9 +14,11 @@ using StringTools;
 
 class BasicSigner implements Signer {
 	var algorithm:Algorithm;
+	var crypto:Crypto;
 	
-	public function new(algorithm) {
+	public function new(algorithm, crypto) {
 		this.algorithm = algorithm;
+		this.crypto = crypto;
 	}
 	
 	public function sign<T:Claims>(claims:T):Promise<String> {
@@ -26,15 +29,7 @@ class BasicSigner implements Signer {
 		
 		var payload = Codec.encodeSegment(claims);
 		var input = '$header.$payload';
-		return switch encodeSignature(input, algorithm) {
-			case Success(signature): '$input.$signature';
-			case Failure(e): return e;
-		}
-	}
-	
-	function unsupported()
-		return Failure(new Error('Unsupported Algorithm'));
 		
-	function encodeSignature(input:String, algorithm:Algorithm):Outcome<String, Error>
-		return unsupported();
+		return crypto.encode(input, algorithm).next(function(sig) return '$input.$sig');
+	}
 }

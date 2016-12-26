@@ -17,10 +17,16 @@ class AlgorithmTools {
 }
 
 @:forward
-abstract Secret(String) from String to String {
+abstract Secret(Bytes) from Bytes to Bytes {
+	@:from
+	public static inline function fromString(v:String):Secret
+		return Bytes.ofString(v);
+		
+	#if nodejs
 	@:to
-	public inline function toBytes():Bytes
-		return Bytes.ofString(this);
+	public inline function toBuffer():js.node.Buffer
+		return js.node.Buffer.hxFromBytes(this);
+	#end
 }
 
 typedef Keys = {
