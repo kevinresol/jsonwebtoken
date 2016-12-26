@@ -45,11 +45,12 @@ class BasicVerifier implements Verifier {
 								return Failure(new Error('Invalid issuer (iss)'));
 						}
 						if(options.aud != null) {
-							if(Std.is(payload.aud, String)) {
-								if(options.aud != cast payload.aud) 
+							var aud:Dynamic = payload.aud;
+							if(Std.is(aud, String)) {
+								if(options.aud != aud) 
 									return Failure(new Error('Invalid audience (aud)'));
 							} else {
-								if(payload.aud.indexOf(options.aud) == -1)
+								if(payload.aud.indexOf(aud) == -1)
 									return Failure(new Error('Invalid audience (aud)'));
 							} 
 						}

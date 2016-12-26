@@ -105,6 +105,8 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 				new NodeCrypto()
 			#elseif php
 				new PhpCrypto()
+			#elseif java
+				new JavaCrypto()
 			#else
 				new StdCrypto()
 			#end ;
