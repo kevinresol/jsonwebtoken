@@ -50,7 +50,7 @@ class BasicVerifier implements Verifier {
 								if(options.aud != aud) 
 									return Failure(new Error('Invalid audience (aud)'));
 							} else {
-								if(payload.aud.indexOf(aud) == -1)
+								if(payload.aud.indexOf(options.aud) == -1)
 									return Failure(new Error('Invalid audience (aud)'));
 							} 
 						}

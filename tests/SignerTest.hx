@@ -109,6 +109,8 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 				new JavaCrypto()
 			#elseif python
 				new PythonCrypto()
+			#elseif cs
+				new CsCrypto()
 			#else
 				new StdCrypto()
 			#end ;
