@@ -107,6 +107,8 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 				new PhpCrypto()
 			#elseif java
 				new JavaCrypto()
+			#elseif python
+				new PythonCrypto()
 			#else
 				new StdCrypto()
 			#end ;
