@@ -27,9 +27,9 @@ class PhpCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
-			case HS256(secret): _hmac('sha256', secret);
-			case HS384(secret): _hmac('sha384', secret);
-			case HS512(secret): _hmac('sha512', secret);
+			case HS256(secret): _hmac('SHA256', secret);
+			case HS384(secret): _hmac('SHA384', secret);
+			case HS512(secret): _hmac('SHA512', secret);
 			case RS256(keys): _sign('SHA256', keys);
 			case RS384(keys): _sign('SHA384', keys);
 			case RS512(keys): _sign('SHA512', keys);
