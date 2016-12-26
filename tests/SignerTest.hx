@@ -100,6 +100,14 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 	}
 	
 	function getSigner(alg:Algorithm) {
-		return new BasicSigner(alg, new NodeCrypto());
+		var crypto = 
+			#if nodejs
+				new NodeCrypto()
+			#elseif php
+				new PhpCrypto()
+			#else
+				new StdCrypto()
+			#end ;
+		return new BasicSigner(alg, crypto);
 	}
 }

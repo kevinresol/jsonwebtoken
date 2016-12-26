@@ -22,6 +22,10 @@ abstract Secret(Bytes) from Bytes to Bytes {
 	public static inline function fromString(v:String):Secret
 		return Bytes.ofString(v);
 		
+	@:to
+	public inline function toString():String
+		return this.toString();
+		
 	#if nodejs
 	@:to
 	public inline function toBuffer():js.node.Buffer
