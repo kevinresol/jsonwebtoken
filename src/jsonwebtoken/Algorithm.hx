@@ -3,6 +3,7 @@ package jsonwebtoken;
 import haxe.io.Bytes;
 
 enum Algorithm {
+	None;
 	HS256(secret:Secret);
 	HS384(secret:Secret);
 	HS512(secret:Secret);

@@ -27,6 +27,7 @@ class PhpCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
+			case None: '';
 			case HS256(secret): _hmac('SHA256', secret);
 			case HS384(secret): _hmac('SHA384', secret);
 			case HS512(secret): _hmac('SHA512', secret);
@@ -52,6 +53,7 @@ class PhpCrypto implements Crypto {
 		}
 			
 		return switch algorithm {
+			case None: _result(signature == '');
 			case HS256(secret): _hmac();
 			case HS384(secret): _hmac();
 			case HS512(secret): _hmac();

@@ -34,6 +34,7 @@ class JavaCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
+			case None: '';
 			case HS256(secret): _hmac('HmacSHA256', secret);
 			case HS384(secret): _hmac('HmacSHA384', secret);
 			case HS512(secret): _hmac('HmacSHA512', secret);
@@ -52,6 +53,7 @@ class JavaCrypto implements Crypto {
 			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
+			case None: _result(signature == '');
 			case HS256(secret): _hmac();
 			case HS384(secret): _hmac();
 			case HS512(secret): _hmac();

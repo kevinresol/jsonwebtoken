@@ -31,6 +31,7 @@ class NodeCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
+			case None: '';
 			case HS256(secret): _hmac('sha256', secret);
 			case HS384(secret): _hmac('sha384', secret);
 			case HS512(secret): _hmac('sha512', secret);
@@ -58,6 +59,7 @@ class NodeCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
+			case None: _result(signature == '');
 			case HS256(secret): _hmac();
 			case HS384(secret): _hmac();
 			case HS512(secret): _hmac();

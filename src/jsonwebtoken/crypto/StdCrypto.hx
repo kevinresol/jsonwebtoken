@@ -18,6 +18,7 @@ class StdCrypto implements Crypto {
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
 		return switch algorithm {
+			case None: '';
 			case HS256(secret):
 				var hmac = new Hmac(SHA256);
 				Success(hmac.make(secret, input.ofString()).encode().toString().sanitize());
@@ -38,6 +39,7 @@ class StdCrypto implements Crypto {
 			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
+			case None: _result(signature == '');
 			case HS256(secret): _hmac();
 			case HS384(secret): _hmac();
 			case HS512(secret): _hmac();

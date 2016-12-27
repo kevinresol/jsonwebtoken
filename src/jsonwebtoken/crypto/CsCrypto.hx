@@ -28,6 +28,7 @@ class CsCrypto implements Crypto {
 		}
 		
 		return switch algorithm {
+			case None: '';
 			case HS256(secret): _hmac(new HMACSHA256(secret.getData()));
 			case HS384(secret): _hmac(new HMACSHA384(secret.getData()));
 			case HS512(secret): _hmac(new HMACSHA512(secret.getData()));
@@ -46,6 +47,7 @@ class CsCrypto implements Crypto {
 			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
+			case None: _result(signature == '');
 			case HS256(secret): _hmac();
 			case HS384(secret): _hmac();
 			case HS512(secret): _hmac();
