@@ -67,37 +67,41 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 		var signer = getSigner(HS256(secret));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.nVrY_yb-LcNKckLaXItppW57KQGiKXTEZVLqhptT6Do', token));
-	}	
+	}
 	
+	#if !(neko || interp || (js && !nodejs))
 	public function testHS384() {
 		var signer = getSigner(HS384(secret));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.X9DaLysdsHc-zZJNEffbWd2HRrWmX3qDKToWGGIJc_0s2SIbQJdHDV804m8LDLSW', token));
-	}	
+	}
 	
 	public function testHS512() {
 		var signer = getSigner(HS512(secret));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.ltlcf72E1-V-u2qGJ7MRiUBngFzp5vXrmC6wuKiQac8l6bcfVspLOnW_pCl-h5QiBp2ckxz51BAZKM8HQZ_-6Q', token));
-	}	
+	}
+	#end
 	
+	#if (node || php || openssl)
 	public function testRS256() {
 		var signer = getSigner(RS256(keys));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.TehmtMaG975_ygPam2o1frZHkXBnLGNpZjJzAMiSu9IpDYVIFs9eRQmKWBEfPTWNL0VV6RhU2OYRsB8UZ-JUyddkiyTpVMcJ6V5ktLW5IeXtNp74-5FTeNIQYUvoSuoaJTs0wJ93PNxPvsfKUFdP80Slx4MTMXypi0ChxOQQmZ6vBKqJFx7kbdA_zlwVMfOPcYiPEBXciYVZXE6QHCz5zo-t9vQTTzZOpVz2o_fqaL0crWaZaKnMDWtCqQOHHPb7-Ir7GWBqOvmkaePiRXRCGTbeY2ISjsWERA2qaugrbKWJYFINUm62wtdmXubUiN9OeC9iirgZQGoewtuaxLM_KA', token));
-	}	
+	}
 	
 	public function testRS384() {
 		var signer = getSigner(RS384(keys));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.djXH4r4en_PkmlBB3qV9kLTsArbQkrnY4eU0QG7e61Uy_xFbiJceNfVnj9VDjJsTRoa9JoT13gVgEAkREn98rqX9KLEQhTHDGxwrFp8zQpM3LGQAV4LB4ZQmXBfd0QNmlpjqFEmM-mBAl8tkmqhQ7bxLH1Kmo4O9c1p0ZMZueUnwumWe-z5E66tzK-NaF9y8YKIFIetsVrcka918lsON5e2yDxIc8HOH3-1yPeDcMf5-fptWa_Ti5WgVnjIflDulXVv672czqX4PZ3IwJU8NbHPFG22KB5v620CbbtvGflvq8-lgNL_qwFwJ49AZA9kvDXVoB4xBmMmcPOTPrrghBA', token));
-	}	
+	}
 	
 	public function testRS512() {
 		var signer = getSigner(RS512(keys));
 		return signer.sign(cast {iss: 'iss'})
 			.next(function(token:String) return equals('eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.afuqwd1UtSdSy8qGoCz5bmsAxbWpywfnf8n_FcrmrvP2caw2ZzpyBrTEGlzFS3Jl5LAAKho_RjPycZjHWfKN_lsGzBlmdLb8nGSER1nnlAV9sXt1XBky0dIEhAYbUEb5lAz2kXHKnt3uy_RgweV1jBOHWwNbf8i_-wy31MwFabYzLEj4tuALOI3jHsJ3-mZBFpeHnQRSSKVtOoiAddz4QHLIRTRcYMwBxAGvgFacaXIt9T-lbp-OHye9j6Lagz5JlbEoEDlsdVYOy0J44xNtwabdmRUJgadyacvHQfesg55algX4t5go_jyyDoEHECXr5veHXcbcRVFEkdgt1eKLqg', token));
 	}
+	#end
 	
 	function getSigner(alg:Algorithm) {
 		var crypto =
