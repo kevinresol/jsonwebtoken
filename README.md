@@ -1,30 +1,20 @@
 # jsonwebtoken [![Build Status](https://travis-ci.org/kevinresol/jsonwebtoken.svg?branch=master)](https://travis-ci.org/kevinresol/jsonwebtoken)
-Haxe implementation of JsonWebToken
 
-
-##### Tested Targets:
-- Neko
-- Python
-- (Node)JS
-- Flash
-- Java
-- C++
-- C# (Fails on Haxe 3.2.1. Passes on Haxe development)
-- PHP (Fails if encoded object is an empty one (`{}`), see https://github.com/HaxeFoundation/haxe/issues/5015)
+Use JsonWebToken in Haxe
 	
-	
-##### Algorithms
+##### Supported Algorithms
 
-
-|Algorithm|Status|
-|---|---|
-|HS256|Supported|
-|HS384|Not supported|
-|HS512|Not supported|
-|RS256|Not supported|
-|RS384|Not supported|
-|RS512|Not supported|
-
+| Target | HS256 | HS384 | HS512 | RS256 | RS384 | RS512 | Remarks|
+| -- | -- | -- | -- | -- | -- | -- | -- |
+| all sys targets | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using openssl |
+| Node | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using Node std lib |
+| PHP | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using PHP std lib |
+| Java | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Using Java std lib |
+| C# | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Using C# std lib |
+| Python | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Using Python std lib |
+| Interp | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
+| Neko | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
+| JS | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
 
 ##### Supported Verifications
 
@@ -38,20 +28,29 @@ Haxe implementation of JsonWebToken
 haxelib install jsonwebtoken
 ```
 
-# Usage
+## Usage
 
-## Signing
-```haxe
-var jwt = new JsonWebToken('my secret');
-var token = jwt.sign(payload);
-```
-Options: (TODO)
-
-## Verifying
+### Signing
 
 ```haxe
-var jwt = new JsonWebToken('my secret');
-jwt.verify('some.jwt.string');
+var crypto = new NodeCrypto(); // pick a crypto from the jsonwebtoken.crypto package
+var signer = new BasicSigner(HS256('secret'), crypto);
+var payload:Claims = {iss: 'issuer'}
+signer.sign(payload).handle(function(o) switch o {
+	case Success(token): trace(token);
+	case Failure(e)): trace('Failed to sign: $e');
+});
 ```
 
-Options: (TODO)
+
+### Verifying
+
+```haxe
+var crypto = new NodeCrypto(); // pick a crypto from the jsonwebtoken.crypto package
+var verifier = new BasicVerifier(HS256('secret'), crypto, {iss: 'issuer'});
+var token = ...;
+verifier.verify(token).handle(function(o) switch o {
+	case Success(_): trace('verified');
+	case Failure(e)): trace('Invalid token: $e');
+});
+```
