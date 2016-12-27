@@ -50,12 +50,10 @@ class NodeCrypto implements Crypto {
 			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
 		
 		function _rsa(alg:String, keys:Keys) {
+			if(keys.publicKey == null) return Failure(new Error('Public Key Missing'));
 			var verify = createVerify(alg);
 			verify.update(input);
-			return _result(verify.verify(switch keys {
-				case {publicKey: null}: return Failure(new Error('Public Key Missing'));
-				case {publicKey: key}: key;
-			}, signature.unsanitize(), 'base64'));
+			return _result(verify.verify(keys.publicKey, signature.unsanitize(), 'base64'));
 		}
 		
 		return switch algorithm {
