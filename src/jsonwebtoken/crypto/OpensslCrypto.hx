@@ -26,8 +26,8 @@ class OpensslCrypto implements Crypto {
 	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
-		function _hmac(alg:String, key:String) {
-			var proc = new Process('openssl', ['dgst', '-binary', '-$alg', '-hmac', key]);
+		function _hmac(alg:String, key:Secret) {
+			var proc = new Process('openssl', ['dgst', '-binary', '-$alg', '-mac', 'HMAC', '-macopt', 'hexkey:' + key.toHex()]);
 			#if asys
 				(input:IdealSource).pipeTo(proc.stdin, {end: true}).handle(function(_) {});
 				return proc.stdout.all() >>
@@ -40,6 +40,7 @@ class OpensslCrypto implements Crypto {
 		}
 		
 		function _rsa(alg:String, keys:Keys) {
+			if(keys.privateKey == null) return (new Error('Private Key Missing'):Promise<String>);
 			var keyPath = '/tmp/' + Md5.encode(keys.privateKey) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.pem';
 			var args = ['dgst', '-binary', '-$alg', '-sign', keyPath];
 			if(keys.passcode != null) {
@@ -69,6 +70,56 @@ class OpensslCrypto implements Crypto {
 			case HS256(secret): _hmac('sha256', secret);
 			case HS384(secret): _hmac('sha384', secret);
 			case HS512(secret): _hmac('sha512', secret);
+			case RS256(keys): _rsa('sha256', keys);
+			case RS384(keys): _rsa('sha384', keys);
+			case RS512(keys): _rsa('sha512', keys);
+		}
+	}
+	
+	public function verify(input:String, algorithm:Algorithm, signature:String):Promise<Noise> {
+		
+		function _result(success)
+			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
+		
+		function _hmac()
+			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		
+		function _rsa(alg:String, keys:Keys) {
+			if(keys.publicKey == null) return (new Error('Public Key Missing'):Promise<Noise>);
+			var keyPath = '/tmp/' + Md5.encode(keys.publicKey) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.pem';
+			var sigPath = '/tmp/' + Md5.encode(signature) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.sig';
+			var args = ['dgst', '-$alg', '-verify', keyPath];
+			var proc = new Process('openssl', ['dgst', '-$alg', '-verify', keyPath, '-signature', sigPath]);
+			#if asys
+				return Future.ofMany([
+					File.saveContent(keyPath, keys.publicKey),
+					File.saveBytes(sigPath, Base64.decode(signature.unsanitize())),
+				]) >>
+					function(o) {
+						(input:IdealSource).pipeTo(proc.stdin, {end: true}).handle(function(_) {});
+						return proc.exitCode() >>
+							function(code:Int) return Future.ofMany([
+								FileSystem.deleteFile(keyPath),
+								FileSystem.deleteFile(sigPath),
+							]) >>
+							function(_) return _result(code == 0);
+					}
+			#elseif sys
+				File.saveContent(keyPath, keys.publicKey);
+				File.saveBytes(sigPath, Base64.decode(signature.unsanitize()));
+				proc.stdin.write(Bytes.ofString(input));
+				proc.stdin.close();
+				var code = proc.exitCode();
+				FileSystem.deleteFile(keyPath);
+				FileSystem.deleteFile(sigPath);
+				return _result(code == 0);
+			#end
+		}
+			
+		return switch algorithm {
+			case HS256(secret): _hmac();
+			case HS384(secret): _hmac();
+			case HS512(secret): _hmac();
 			case RS256(keys): _rsa('sha256', keys);
 			case RS384(keys): _rsa('sha384', keys);
 			case RS512(keys): _rsa('sha512', keys);

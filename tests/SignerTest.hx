@@ -100,20 +100,22 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 	}
 	
 	function getSigner(alg:Algorithm) {
-		var crypto = new OpensslCrypto();
-			// #if nodejs
-			// 	new NodeCrypto()
-			// #elseif php
-			// 	new PhpCrypto()
-			// #elseif java
-			// 	new JavaCrypto()
-			// #elseif python
-			// 	new PythonCrypto()
-			// #elseif cs
-			// 	new CsCrypto()
-			// #else
-			// 	new StdCrypto()
-			// #end ;
+		var crypto =
+			#if openssl
+				new OpensslCrypto()
+			#elseif nodejs
+				new NodeCrypto()
+			#elseif php
+				new PhpCrypto()
+			#elseif java
+				new JavaCrypto()
+			#elseif python
+				new PythonCrypto()
+			#elseif cs
+				new CsCrypto()
+			#else
+				new StdCrypto()
+			#end ;
 		return new BasicSigner(alg, crypto);
 	}
 }

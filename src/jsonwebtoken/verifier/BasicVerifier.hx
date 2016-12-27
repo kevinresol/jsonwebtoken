@@ -28,9 +28,7 @@ class BasicVerifier implements Verifier {
 				if(header.typ != 'JWT') return new Error('Invalid typ header');
 				if(header.alg != algorithm.toString()) return new Error('Invalid algorithm');
 				
-				return crypto.sign('$h.$p', algorithm).next(function(sig):Outcome<T, Error> {
-					if(sig != s) return Failure(new Error('Invalid signature'));
-					
+				return crypto.verify('$h.$p', algorithm, s).next(function(sig):Outcome<T, Error> {
 					var payload:Claims = Codec.decodeSegment(p);
 					
 					if(payload.nbf != null && Std.is(payload.nbf, Float) && Date.now().getTime() / 1000 < payload.nbf.toInt())

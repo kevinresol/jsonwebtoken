@@ -16,6 +16,9 @@ class JavaCrypto implements Crypto {
 	
 	public function new() {}
 	
+	inline function unsupported<T>():Outcome<T, Error>
+		return Failure(new Error('Unsupported Algorithm'));
+	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
 		function _hmac(alg:String, key:Secret) {
@@ -30,9 +33,6 @@ class JavaCrypto implements Crypto {
 			}
 		}
 		
-		inline function unsupported()
-			return Failure(new Error('Unsupported Algorithm'));
-		
 		return switch algorithm {
 			case HS256(secret): _hmac('HmacSHA256', secret);
 			case HS384(secret): _hmac('HmacSHA384', secret);
@@ -43,6 +43,23 @@ class JavaCrypto implements Crypto {
 		}
 	}
 	
+	public function verify(input:String, algorithm:Algorithm, signature:String):Promise<Noise> {
+		
+		function _result(success)
+			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
+		
+		function _hmac()
+			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+			
+		return switch algorithm {
+			case HS256(secret): _hmac();
+			case HS384(secret): _hmac();
+			case HS512(secret): _hmac();
+			case RS256(keys): unsupported();
+			case RS384(keys): unsupported();
+			case RS512(keys): unsupported();
+		}
+	}
 }
 
 @:native('javax.crypto.Mac')

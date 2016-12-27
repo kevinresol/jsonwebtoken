@@ -39,4 +39,31 @@ class NodeCrypto implements Crypto {
 			case RS512(keys): _rsa('RSA-SHA512', keys);
 		}
 	}
+	
+	public function verify(input:String, algorithm:Algorithm, signature:String):Promise<Noise> {
+		
+		function _result(success)
+			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
+		
+		function _hmac()
+			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		
+		function _rsa(alg:String, keys:Keys) {
+			var verify = createVerify(alg);
+			verify.update(input);
+			return _result(verify.verify(switch keys {
+				case {publicKey: null}: return Failure(new Error('Public Key Missing'));
+				case {publicKey: key}: key;
+			}, signature.unsanitize(), 'base64'));
+		}
+		
+		return switch algorithm {
+			case HS256(secret): _hmac();
+			case HS384(secret): _hmac();
+			case HS512(secret): _hmac();
+			case RS256(keys): _rsa('RSA-SHA256', keys);
+			case RS384(keys): _rsa('RSA-SHA384', keys);
+			case RS512(keys): _rsa('RSA-SHA512', keys);
+		}
+	}
 }

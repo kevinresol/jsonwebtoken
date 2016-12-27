@@ -14,15 +14,15 @@ class PythonCrypto implements Crypto {
 	
 	public function new() {}
 	
+	inline function unsupported<T>():Outcome<T, Error>
+		return Failure(new Error('Unsupported Algorithm'));
+	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
 		function _hmac(alg:Void->Hashlib, key:Secret) {
 			var digest = Hmac.new_(key.getData(), {msg: Bytes.ofString(input).getData(), digestmod: alg}).digest();
 			return Success(Base64.encode(Bytes.ofData(digest)).sanitize());
 		}
-		
-		inline function unsupported()
-			return Failure(new Error('Unsupported Algorithm'));
 		
 		return switch algorithm {
 			case HS256(secret): _hmac(Hashlib.sha256, secret);
@@ -34,6 +34,23 @@ class PythonCrypto implements Crypto {
 		}
 	}
 	
+	public function verify(input:String, algorithm:Algorithm, signature:String):Promise<Noise> {
+		
+		function _result(success)
+			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
+		
+		function _hmac()
+			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+			
+		return switch algorithm {
+			case HS256(secret): _hmac();
+			case HS384(secret): _hmac();
+			case HS512(secret): _hmac();
+			case RS256(keys): unsupported();
+			case RS384(keys): unsupported();
+			case RS512(keys): unsupported();
+		}
+	}
 }
 
 @:pythonImport('hashlib')
