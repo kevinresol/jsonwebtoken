@@ -14,7 +14,10 @@ enum Algorithm {
 
 class AlgorithmTools {
 	public static inline function toString(a:Algorithm)
-		return a.getName();
+		return switch a {
+			case None: 'none';
+			default: a.getName();
+		}
 }
 
 @:forward
