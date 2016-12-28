@@ -16,6 +16,7 @@ Use JsonWebToken in Haxe
 | Interp | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
 | Neko | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
 | JS | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
+| C++ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Using Haxe std lib |
 
 
 ##### Supported Verifications
