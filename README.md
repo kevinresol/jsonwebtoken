@@ -7,7 +7,7 @@ Use JsonWebToken in Haxe
 
 | Target | HS256 | HS384 | HS512 | RS256 | RS384 | RS512 | Remarks|
 | --- | :---: | :---: | :---: | :---: | :---: | :---: | --- | 
-| all sys targets | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using openssl |
+| all sys targets | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using openssl cli |
 | Node | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using Node std lib |
 | PHP | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Using PHP std lib |
 | Java | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Using Java std lib |
