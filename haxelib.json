@@ -4,9 +4,9 @@
     "license": "MIT",
     "classPath": "src",
     "tags": ["cross", "jsonwebtoken"],
-    "description": "Haxe implementation of JsonWebToken",
-    "releasenote": "Initial release",
-    "version": "1.0.0",
+    "description": "JsonWebToken for Haxe",
+    "releasenote": "Changed API and added more algorithm supports",
+    "version": "2.0.0",
     "contributors": ["kevinresol"],
     "dependencies": {
         "tink_core": ""
