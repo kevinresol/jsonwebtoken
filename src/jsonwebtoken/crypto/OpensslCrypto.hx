@@ -1,10 +1,10 @@
 package jsonwebtoken.crypto;
 
 import haxe.crypto.Md5;
-import tink.io.IdealSource;
 import jsonwebtoken.Algorithm;
 
 #if asys
+import tink.io.IdealSource;
 import asys.io.Process;
 import asys.io.File;
 import asys.FileSystem;
