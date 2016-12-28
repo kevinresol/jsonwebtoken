@@ -21,6 +21,7 @@ using haxe.crypto.Base64;
 using StringTools;
 using tink.CoreApi;
 
+#if nodejs @:require(asys) /* hxnodejs does not support sys.io.Process yet */ #end
 class OpensslCrypto implements Crypto {
 	
 	public function new() {}
