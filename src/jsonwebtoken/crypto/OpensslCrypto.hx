@@ -16,6 +16,7 @@ import sys.FileSystem;
 
 using jsonwebtoken.Codec;
 using haxe.io.Bytes;
+using haxe.io.Path;
 using haxe.crypto.Base64;
 using StringTools;
 using tink.CoreApi;
@@ -87,8 +88,9 @@ class OpensslCrypto implements Crypto {
 		
 		function _rsa(alg:String, keys:Keys) {
 			if(keys.publicKey == null) return (new Error('Public Key Missing'):Promise<Noise>);
-			var keyPath = '/tmp/' + Md5.encode(keys.publicKey) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.pem';
-			var sigPath = '/tmp/' + Md5.encode(signature) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.sig';
+			var tmpDir = getTmpDir().addTrailingSlash();
+			var keyPath = tmpDir + Md5.encode(keys.publicKey) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.pem';
+			var sigPath = tmpDir + Md5.encode(signature) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.sig';
 			var args = ['dgst', '-$alg', '-verify', keyPath];
 			var proc = new Process('openssl', ['dgst', '-$alg', '-verify', keyPath, '-signature', sigPath]);
 			#if asys
@@ -126,5 +128,29 @@ class OpensslCrypto implements Crypto {
 			case RS384(keys): _rsa('sha384', keys);
 			case RS512(keys): _rsa('sha512', keys);
 		}
+	}
+	
+	inline function getTmpDir():String {
+		return
+			#if nodejs
+				js.node.Os.tmpdir();
+			#elseif php
+				untyped __call__('sys_get_temp_dir');
+			#elseif cs
+				cs.system.io.Path.GetTempPath();
+			#else
+				switch Sys.systemName() {
+					case 'Windows':
+						switch Sys.getEnv('Temp') {
+							case null: 'C:\\Temp';
+							case v: v;
+						}
+					default: 
+						switch Sys.getEnv('TMPDIR') {
+							case null: '/tmp';
+							case v: v;
+						}
+				}
+			#end
 	}
 }

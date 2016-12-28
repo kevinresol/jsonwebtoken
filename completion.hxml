@@ -1,5 +1,10 @@
 tests.hxml
--neko bin/tests.n
+# -neko bin/tests.n
+-cs bin/cs.n
 
 -lib travix
 -lib jsonwebtoken
+
+-lib tink_io
+
+-D openssl
