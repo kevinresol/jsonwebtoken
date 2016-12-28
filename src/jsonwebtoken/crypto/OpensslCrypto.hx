@@ -88,7 +88,7 @@ class OpensslCrypto implements Crypto {
 		
 		function _rsa(alg:String, keys:Keys) {
 			if(keys.publicKey == null) return (new Error('Public Key Missing'):Promise<Noise>);
-			var tmpDir = getTmpDir().addTrailingSlash();
+			var tmpDir = getTmpDir().addTrailingSlash(); trace(tmpDir);
 			var keyPath = tmpDir + Md5.encode(keys.publicKey) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.pem';
 			var sigPath = tmpDir + Md5.encode(signature) + '-' + Date.now().getTime() + '-' + Std.random(99999) + '.sig';
 			var args = ['dgst', '-$alg', '-verify', keyPath];
