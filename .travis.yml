@@ -5,7 +5,7 @@ language: haxe
 
 os:
   - linux
-  - osx
+  # - osx
 
 haxe:
   - "3.4.0-rc.2"
@@ -26,15 +26,15 @@ script:
   - haxelib run travix php -lib tink_unittest
   - haxelib run travix interp -lib tink_unittest
   - haxelib run travix neko -lib tink_unittest
-  - haxelib run travix python -lib tink_unittest
+  # - haxelib run travix python -lib tink_unittest
   - haxelib run travix node -lib tink_unittest
   - haxelib run travix js -lib tink_unittest
   - haxelib run travix java -lib tink_unittest
   - haxelib run travix cs -lib tink_unittest
-  - haxelib run travix php -lib tink_unittest -lib tink_io -D openssl
-  - haxelib run travix interp -lib tink_unittest -lib tink_io -D openssl
-  - haxelib run travix neko -lib tink_unittest -lib tink_io -D openssl
-  - haxelib run travix python -lib tink_unittest -lib tink_io -D openssl
-  - haxelib run travix node -lib tink_unittest -lib tink_io -lib asys -D openssl
-  - haxelib run travix java -lib tink_unittest -lib tink_io -D openssl
-  - haxelib run travix cs -lib tink_unittest -lib tink_io -D openssl
+  # - haxelib run travix php -lib tink_unittest -D openssl
+  - haxelib run travix interp -lib tink_unittest -D openssl
+  - haxelib run travix neko -lib tink_unittest -D openssl
+  # - haxelib run travix python -lib tink_unittest -D openssl
+  # - haxelib run travix node -lib tink_unittest -lib asys -D openssl
+  - haxelib run travix java -lib tink_unittest -D openssl
+  # - haxelib run travix cs -lib tink_unittest -D openssl
