@@ -1,10 +1,10 @@
 package jsonwebtoken.crypto;
 
 import haxe.crypto.Md5;
-import tink.io.IdealSource;
 import jsonwebtoken.Algorithm;
 
 #if asys
+import tink.io.IdealSource;
 import asys.io.Process;
 import asys.io.File;
 import asys.FileSystem;
@@ -21,6 +21,7 @@ using haxe.crypto.Base64;
 using StringTools;
 using tink.CoreApi;
 
+#if nodejs @:require(asys) /* hxnodejs does not support sys.io.Process yet */ #end
 class OpensslCrypto implements Crypto {
 	
 	public function new() {}

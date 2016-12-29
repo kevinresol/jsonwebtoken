@@ -5,6 +5,10 @@ import jsonwebtoken.Codec;
 
 using tink.CoreApi;
 
+/**
+	On Windows:
+	Enable openssl extension by uncommenting `extension=php_openssl.dll` in php.ini
+**/
 @:require(php)
 class PhpCrypto implements Crypto {
 	
