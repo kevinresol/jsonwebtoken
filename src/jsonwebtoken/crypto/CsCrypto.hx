@@ -21,11 +21,8 @@ class CsCrypto implements Crypto {
 	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
-		function _hmac(hmac:HMAC) {
-			hmac.Initialize();
-			var digest = hmac.ComputeHash(Bytes.ofString(input).getData());
-			return Success(Base64.encode(Bytes.ofData(digest)).sanitize());
-		}
+		function _hmac(h:HMAC)
+			return hmac(input, h);
 		
 		return switch algorithm {
 			case None: '';
@@ -43,17 +40,23 @@ class CsCrypto implements Crypto {
 		function _result(success)
 			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
 		
-		function _hmac()
-			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		function _hmac(h:HMAC)
+			return hmac(input, h).flatMap(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
 			case None: _result(signature == '');
-			case HS256(secret): _hmac();
-			case HS384(secret): _hmac();
-			case HS512(secret): _hmac();
+			case HS256(secret): _hmac(new HMACSHA256(secret.getData()));
+			case HS384(secret): _hmac(new HMACSHA384(secret.getData()));
+			case HS512(secret): _hmac(new HMACSHA512(secret.getData()));
 			case RS256(keys): unsupported();
 			case RS384(keys): unsupported();
 			case RS512(keys): unsupported();
 		}
+	}
+	
+	function hmac(input:String, hmac:HMAC) {
+		hmac.Initialize();
+		var digest = hmac.ComputeHash(Bytes.ofString(input).getData());
+		return Success(Base64.encode(Bytes.ofData(digest)).sanitize());
 	}
 }

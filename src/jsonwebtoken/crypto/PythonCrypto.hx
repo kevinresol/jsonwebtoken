@@ -19,10 +19,8 @@ class PythonCrypto implements Crypto {
 	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
-		function _hmac(alg:Void->Hashlib, key:Secret) {
-			var digest = Hmac.new_(key.getData(), {msg: Bytes.ofString(input).getData(), digestmod: alg}).digest();
-			return Success(Base64.encode(Bytes.ofData(digest)).sanitize());
-		}
+		function _hmac(alg:Void->Hashlib, key:Secret)
+			return hmac(input, alg, key);
 		
 		return switch algorithm {
 			case None: '';
@@ -40,18 +38,23 @@ class PythonCrypto implements Crypto {
 		function _result(success)
 			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
 		
-		function _hmac()
-			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		function _hmac(alg:Void->Hashlib, key:Secret)
+			return hmac(input, alg, key).flatMap(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
 			case None: _result(signature == '');
-			case HS256(secret): _hmac();
-			case HS384(secret): _hmac();
-			case HS512(secret): _hmac();
+			case HS256(secret): _hmac(Hashlib.sha256, secret);
+			case HS384(secret): _hmac(Hashlib.sha384, secret);
+			case HS512(secret): _hmac(Hashlib.sha512, secret);
 			case RS256(keys): unsupported();
 			case RS384(keys): unsupported();
 			case RS512(keys): unsupported();
 		}
+	}
+	
+	function hmac(input:String, alg:Void->Hashlib, key:Secret) {
+		var digest = Hmac.new_(key.getData(), {msg: Bytes.ofString(input).getData(), digestmod: alg}).digest();
+		return Success(Base64.encode(Bytes.ofData(digest)).sanitize());
 	}
 }
 

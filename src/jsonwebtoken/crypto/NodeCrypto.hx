@@ -13,12 +13,9 @@ class NodeCrypto implements Crypto {
 	public function new() {}
 	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
-		function _hmac(alg:String, key:Buffer) {
-			if(key == null) return Failure(new Error('Secret Missing'));
-			var hmac = createHmac(alg, key);
-			hmac.update(input);
-			return Success(hmac.digest('base64').sanitize());
-		}
+		
+		inline function _hmac(alg:String, key:Buffer)
+			return hmac(input, alg, key);
 		
 		function _rsa(alg:String, keys:Keys) {
 			var sign = createSign(alg);
@@ -46,8 +43,8 @@ class NodeCrypto implements Crypto {
 		function _result(success)
 			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
 		
-		function _hmac()
-			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		function _hmac(alg, key)
+			return hmac(input, alg, key).flatMap(function(sig) return _result(sig == signature));
 		
 		function _rsa(alg:String, keys:Keys) {
 			if(keys.publicKey == null) return Failure(new Error('Public Key Missing'));
@@ -58,12 +55,19 @@ class NodeCrypto implements Crypto {
 		
 		return switch algorithm {
 			case None: _result(signature == '');
-			case HS256(secret): _hmac();
-			case HS384(secret): _hmac();
-			case HS512(secret): _hmac();
+			case HS256(secret): _hmac('sha256', secret);
+			case HS384(secret): _hmac('sha384', secret);
+			case HS512(secret): _hmac('sha512', secret);
 			case RS256(keys): _rsa('RSA-SHA256', keys);
 			case RS384(keys): _rsa('RSA-SHA384', keys);
 			case RS512(keys): _rsa('RSA-SHA512', keys);
 		}
+	}
+	
+	function hmac(input:String, alg:String, key:Buffer) {
+		if(key == null) return Failure(new Error('Secret Missing'));
+		var hmac = createHmac(alg, key);
+		hmac.update(input);
+		return Success(hmac.digest('base64').sanitize());
 	}
 }

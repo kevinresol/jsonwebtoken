@@ -21,17 +21,8 @@ class JavaCrypto implements Crypto {
 	
 	public function sign(input:String, algorithm:Algorithm):Promise<String> {
 		
-		function _hmac(alg:String, key:Secret) {
-			return try {
-				var signingKey = new SecretKeySpec(key.getData(), alg);
-				var mac = Mac.getInstance(alg);
-				mac.init(signingKey);
-				var hmac = Bytes.ofData(mac.doFinal(Bytes.ofString(input).getData()));
-				Success(Base64.encode(hmac).toString().sanitize());
-			} catch(e:Dynamic) {
-				Failure(Error.withData('Native error', e));
-			}
-		}
+		function _hmac(alg:String, key:Secret)
+			return hmac(input, alg, key);
 		
 		return switch algorithm {
 			case None: '';
@@ -49,17 +40,29 @@ class JavaCrypto implements Crypto {
 		function _result(success)
 			return success ? Success(Noise) : Failure(new Error('Invalid signature'));
 		
-		function _hmac()
-			return sign(input, algorithm).next(function(sig) return _result(sig == signature));
+		function _hmac(alg:String, key:Secret)
+			return hmac(input, alg, key).flatMap(function(sig) return _result(sig == signature));
 			
 		return switch algorithm {
 			case None: _result(signature == '');
-			case HS256(secret): _hmac();
-			case HS384(secret): _hmac();
-			case HS512(secret): _hmac();
+			case HS256(secret): _hmac('HmacSHA256', secret);
+			case HS384(secret): _hmac('HmacSHA384', secret);
+			case HS512(secret): _hmac('HmacSHA512', secret);
 			case RS256(keys): unsupported();
 			case RS384(keys): unsupported();
 			case RS512(keys): unsupported();
+		}
+	}
+	
+	function hmac(input:String, alg:String, key:Secret) {
+		return try {
+			var signingKey = new SecretKeySpec(key.getData(), alg);
+			var mac = Mac.getInstance(alg);
+			mac.init(signingKey);
+			var hmac = Bytes.ofData(mac.doFinal(Bytes.ofString(input).getData()));
+			Success(Base64.encode(hmac).toString().sanitize());
+		} catch(e:Dynamic) {
+			Failure(Error.withData('Native error', e));
 		}
 	}
 }
