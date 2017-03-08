@@ -87,7 +87,7 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 	}
 	#end
 	
-	#if (node || php || openssl)
+	#if (nodejs || php || openssl)
 	public function testRS256() {
 		var token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.TehmtMaG975_ygPam2o1frZHkXBnLGNpZjJzAMiSu9IpDYVIFs9eRQmKWBEfPTWNL0VV6RhU2OYRsB8UZ-JUyddkiyTpVMcJ6V5ktLW5IeXtNp74-5FTeNIQYUvoSuoaJTs0wJ93PNxPvsfKUFdP80Slx4MTMXypi0ChxOQQmZ6vBKqJFx7kbdA_zlwVMfOPcYiPEBXciYVZXE6QHCz5zo-t9vQTTzZOpVz2o_fqaL0crWaZaKnMDWtCqQOHHPb7-Ir7GWBqOvmkaePiRXRCGTbeY2ISjsWERA2qaugrbKWJYFINUm62wtdmXubUiN9OeC9iirgZQGoewtuaxLM_KA';
 		var verifier = getVerifier(RS256(keys));

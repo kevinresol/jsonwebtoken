@@ -83,7 +83,7 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 	}
 	#end
 	
-	#if (node || php || openssl)
+	#if (nodejs || php || openssl)
 	public function testRS256() {
 		var signer = getSigner(RS256(keys));
 		return signer.sign(cast {iss: 'iss'})

@@ -1,9 +1,11 @@
 package jsonwebtoken;
 
+import haxe.extern.EitherType;
+
 typedef Claims = {
 	?iss:String,
 	?sub:String,
-	?aud:Sequence<String>,
+	?aud:EitherType<Array<String>, String>,
 	?exp:EpochTimeSeconds,
 	?nbf:EpochTimeSeconds,
 	?iat:EpochTimeSeconds,
