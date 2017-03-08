@@ -2,6 +2,8 @@ package jsonwebtoken.verifier;
 
 import jsonwebtoken.Verifier;
 import jsonwebtoken.Sequence;
+import jsonwebtoken.Crypto;
+import jsonwebtoken.crypto.DefaultCrypto;
 
 using jsonwebtoken.Algorithm;
 using jsonwebtoken.Codec;
@@ -13,9 +15,12 @@ class BasicVerifier implements Verifier {
 	var crypto:Crypto;
 	var options:VerifyOptions;
 	
-	public function new(algorithm, crypto, ?options) {
+	public function new(algorithm, ?crypto, ?options) {
 		this.algorithm = algorithm;
-		this.crypto = crypto;
+		this.crypto = switch crypto {
+			case null: new DefaultCrypto();
+			case v: v;
+		}
 		this.options = options;
 	}
 	

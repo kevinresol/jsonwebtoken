@@ -1,9 +1,9 @@
 package jsonwebtoken.signer;
 
-import haxe.crypto.Hmac;
 import jsonwebtoken.Signer;
 import jsonwebtoken.Codec;
 import jsonwebtoken.Crypto;
+import jsonwebtoken.crypto.DefaultCrypto;
 
 using jsonwebtoken.Algorithm;
 using haxe.io.Bytes;
@@ -16,9 +16,12 @@ class BasicSigner implements Signer {
 	var algorithm:Algorithm;
 	var crypto:Crypto;
 	
-	public function new(algorithm, crypto) {
+	public function new(algorithm, ?crypto) {
 		this.algorithm = algorithm;
-		this.crypto = crypto;
+		this.crypto = switch crypto {
+			case null: new DefaultCrypto();
+			case v: v;
+		}
 	}
 	
 	public function sign<T:Claims>(claims:T):Promise<String> {
