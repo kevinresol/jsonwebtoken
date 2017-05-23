@@ -38,7 +38,7 @@ abstract Secret(Bytes) from Bytes to Bytes {
 }
 
 typedef Keys = {
-	publicKey:String,
+	?publicKey:String,
 	?privateKey:String,
 	?passcode:String,
 }
