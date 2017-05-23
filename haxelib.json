@@ -10,8 +10,8 @@
 	"contributors": [
 		"kevinresol"
 	],
-	"releasenote": "Use EitherType for the aud claim",
-	"version": "2.0.1",
+	"releasenote": "Add DefaultCrypto",
+	"version": "2.0.2",
 	"url": "https://github.com/kevinresol/jsonwebtoken",
 	"dependencies": {
 		"tink_core": ""
