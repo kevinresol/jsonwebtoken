@@ -1,0 +1,8 @@
+# @install: lix --silent download https://github.com/kevinresol/asys/archive/81d6331dd5cbf9f8913fe1a62b2134de3bd714d7.tar.gz into asys/0.3.0/github/81d6331dd5cbf9f8913fe1a62b2134de3bd714d7
+-D asys=0.3.0
+-cp ${HAXESHIM_LIBCACHE}/asys/0.3.0/github/81d6331dd5cbf9f8913fe1a62b2134de3bd714d7/
+
+-lib tink_core
+-lib tink_macro
+-lib tink_io
+-lib tink_streams

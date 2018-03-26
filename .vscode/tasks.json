@@ -1,7 +1,7 @@
 {
-    "version": "0.1.0",
-    "command": "haxelib",
-    "args": ["run","travix","node","-lib","tink_unittest"],
+    "version": "2.0.0",
+    "command": "travix",
+    "args": ["node"],
     "problemMatcher": {
         "owner": "haxe",
         "pattern": {
@@ -14,5 +14,9 @@
             "severity": 6,
             "message": 7
         }
+    },
+    "group": {
+        "kind": "build",
+        "isDefault": true
     }
 }
