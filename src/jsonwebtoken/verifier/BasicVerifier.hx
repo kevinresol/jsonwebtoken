@@ -30,7 +30,7 @@ class BasicVerifier implements Verifier {
 		switch token.sanitize().split('.') {
 			case [h, p, s]:
 				var header:Header = Codec.decodeSegment(h);
-				if(header.typ != 'JWT') return new Error('Invalid typ header');
+				// if(header.typ != 'JWT') return new Error('Invalid typ header');
 				if(header.alg != algorithm.toString()) return new Error('Invalid algorithm');
 				
 				return crypto.verify('$h.$p', algorithm, s).next(function(sig):Outcome<T, Error> {
