@@ -41,7 +41,7 @@ var signer = new BasicSigner(HS256('secret'), crypto);
 var payload:Claims = {iss: 'issuer'}
 signer.sign(payload).handle(function(o) switch o {
 	case Success(token): trace(token);
-	case Failure(e)): trace('Failed to sign: $e');
+	case Failure(e): trace('Failed to sign: $e');
 });
 ```
 
@@ -54,6 +54,6 @@ var verifier = new BasicVerifier(HS256('secret'), crypto, {iss: 'issuer'});
 var token = ...;
 verifier.verify(token).handle(function(o) switch o {
 	case Success(_): trace('verified');
-	case Failure(e)): trace('Invalid token: $e');
+	case Failure(e): trace('Invalid token: $e');
 });
 ```
