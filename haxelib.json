@@ -10,8 +10,8 @@
 	"contributors": [
 		"kevinresol"
 	],
-	"releasenote": "Add DefaultCrypto",
-	"version": "2.0.2",
+	"releasenote": "typ header is optional",
+	"version": "2.0.3",
 	"url": "https://github.com/kevinresol/jsonwebtoken",
 	"dependencies": {
 		"tink_core": ""
