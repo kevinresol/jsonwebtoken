@@ -69,7 +69,7 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 			.next(function(token:String) return assert('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.nVrY_yb-LcNKckLaXItppW57KQGiKXTEZVLqhptT6Do' == token));
 	}
 	
-	#if !(cpp || neko || interp || (js && !nodejs))
+	#if (crypto || !(cpp || neko || interp || (js && !nodejs)))
 	public function testHS384() {
 		var signer = getSigner(HS384(secret));
 		return signer.sign(cast {iss: 'iss'})

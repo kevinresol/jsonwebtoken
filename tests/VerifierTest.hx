@@ -73,7 +73,7 @@ TiJT9PxwpfK53Oh7RBSWHJZRuAdLUXE8DG+bl0N/QkJM6pFUxTI1AQ==
 		return verifier.verify(token).map(function(o:Outcome<Claims, Error>) return assert(o));
 	}
 	
-	#if !(cpp || neko || interp || (js && !nodejs))
+	#if (crypto || !(cpp || neko || interp || (js && !nodejs)))
 	public function testHS384() {
 		var token = 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJpc3MifQ.X9DaLysdsHc-zZJNEffbWd2HRrWmX3qDKToWGGIJc_0s2SIbQJdHDV804m8LDLSW';
 		var verifier = getVerifier(HS384(secret));

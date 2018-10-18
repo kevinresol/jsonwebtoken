@@ -1,39 +1,45 @@
 sudo: required
 dist: trusty
 
-language: haxe
+language: node_js
+node_js: 8
+
+cache:
+  directories:
+    - $HOME/haxe
 
 os:
   - linux
-  - osx
+  # - osx
 
-haxe:
-  - "3.4.2"
-  - development
+env:
+  - HAXE_VERSION=3.4.7
+  - HAXE_VERSION=latest
   
-# matrix:
-#   allow_failures:
-#     - haxe: development
-    
+before_install:
+  - args=()
+  - if [[ "$(haxe -version)" =~ ^4.* ]]; then args+=(-lib); args+=(crypto); fi
+  
 install:
-  - haxelib install travix
-  - haxelib run travix install
+  - npm i -g lix
+  - lix install haxe $HAXE_VERSION
+  - lix download
 
 script:
-  - haxelib run travix php
-  - haxelib run travix interp
-  - haxelib run travix neko
-  - haxelib run travix python
-  - haxelib run travix node
-  - haxelib run travix js
-  - haxelib run travix java
-  - haxelib run travix cs
-  - haxelib run travix cpp
-  # - haxelib run travix php -D openssl
-  - haxelib run travix interp -D openssl
-  - haxelib run travix neko -D openssl
-  # - haxelib run travix python -D openssl
-  # - haxelib run travix node -lib asys -D openssl
-  - haxelib run travix java -D openssl
-  # - haxelib run travix cs -D openssl
-  - haxelib run travix cpp -D openssl
+  - lix run travix php "${args[@]}"
+  - lix run travix interp "${args[@]}"
+  - lix run travix neko "${args[@]}"
+  - lix run travix python "${args[@]}"
+  - lix run travix node "${args[@]}"
+  - lix run travix js "${args[@]}"
+  - lix run travix java "${args[@]}"
+  - lix run travix cs "${args[@]}"
+  - lix run travix cpp "${args[@]}"
+  - lix run travix php -D openssl
+  - lix run travix interp -D openssl
+  - lix run travix neko -D openssl
+  - lix run travix python -D openssl
+  - lix run travix node -lib asys -D openssl
+  - lix run travix java -D openssl
+  - lix run travix cs -D openssl
+  - lix run travix cpp -D openssl

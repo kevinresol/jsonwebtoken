@@ -23,8 +23,8 @@ class StdCrypto implements Crypto {
 		return switch algorithm {
 			case None: '';
 			case HS256(secret): _hmac(SHA256, secret);
-			case HS384(secret): unsupported();
-			case HS512(secret): unsupported();
+			case HS384(secret): _hmac(SHA384, secret);
+			case HS512(secret): _hmac(SHA512, secret);
 			case RS256(keys): unsupported();
 			case RS384(keys): unsupported();
 			case RS512(keys): unsupported();
@@ -42,8 +42,8 @@ class StdCrypto implements Crypto {
 		return switch algorithm {
 			case None: _result(signature == '');
 			case HS256(secret): _hmac(SHA256, secret);
-			case HS384(secret): unsupported();
-			case HS512(secret): unsupported();
+			case HS384(secret): _hmac(SHA384, secret);
+			case HS512(secret): _hmac(SHA512, secret);
 			case RS256(keys): unsupported();
 			case RS384(keys): unsupported();
 			case RS512(keys): unsupported();
