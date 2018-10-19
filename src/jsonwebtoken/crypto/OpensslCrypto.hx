@@ -53,13 +53,11 @@ class OpensslCrypto implements Crypto {
 			var proc = new Process('openssl', args);
 			#if asys
 				return File.saveContent(keyPath, keys.privateKey)
-					.next(function(o) {
-						return (input:IdealSource).pipeTo(proc.stdin, {end: true})
-							.next(function(result) return result.toOutcome())
-							.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
-							.next(function(_) return proc.stdout.all())
-							.next(function(chunk) return FileSystem.deleteFile(keyPath).swap(Base64.encode(chunk).sanitize()));
-					});
+					.next(function(_) return (input:IdealSource).pipeTo(proc.stdin, {end: true}))
+					.next(function(result) return result.toOutcome())
+					.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
+					.next(function(_) return proc.stdout.all())
+					.next(function(chunk) return FileSystem.deleteFile(keyPath).swap(Base64.encode(chunk).sanitize()));
 			#elseif sys
 				File.saveContent(keyPath, keys.privateKey);
 				proc.stdin.write(Bytes.ofString(input));
@@ -101,16 +99,11 @@ class OpensslCrypto implements Crypto {
 					File.saveContent(keyPath, keys.publicKey),
 					File.saveBytes(sigPath, Base64.decode(signature.unsanitize())),
 				])
-					.next(function(_) {
-						return (input:IdealSource).pipeTo(proc.stdin, {end: true})
-							.next(function(result) return result.toOutcome())
-							.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
-							.next(function(_) return proc.exitCode())
-							.next(function(code) return Promise.inParallel([
-								FileSystem.deleteFile(keyPath),
-								FileSystem.deleteFile(sigPath),
-							]).swap(_result(code == 0)));
-					});
+					.next(function(_) return (input:IdealSource).pipeTo(proc.stdin, {end: true}))
+					.next(function(result) return result.toOutcome())
+					.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
+					.next(function(_) return proc.exitCode())
+					.next(function(code) return Promise.inParallel([keyPath, sigPath].map(FileSystem.deleteFile)).swap(_result(code == 0)));
 			#elseif sys
 				File.saveContent(keyPath, keys.publicKey);
 				File.saveBytes(sigPath, Base64.decode(signature.unsanitize()));
