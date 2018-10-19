@@ -50,7 +50,6 @@ class OpensslCrypto implements Crypto {
 				args.push('-passin');
 				args.push('pass:' + keys.passcode);
 			}
-			trace(args);
 			var proc = new Process('openssl', args);
 			#if asys
 				return File.saveContent(keyPath, keys.privateKey)
