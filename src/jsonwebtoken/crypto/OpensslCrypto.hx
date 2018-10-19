@@ -4,7 +4,6 @@ import haxe.crypto.Md5;
 import jsonwebtoken.Algorithm;
 
 #if asys
-import tink.io.IdealSource;
 import asys.io.Process;
 import asys.io.File;
 import asys.FileSystem;
@@ -20,6 +19,8 @@ using haxe.io.Path;
 using haxe.crypto.Base64;
 using StringTools;
 using tink.CoreApi;
+using tink.io.Source;
+using tink.io.PipeResult;
 
 #if nodejs @:require(asys) /* hxnodejs does not support sys.io.Process yet */ #end
 class OpensslCrypto implements Crypto {
@@ -32,8 +33,8 @@ class OpensslCrypto implements Crypto {
 			var proc = new Process('openssl', ['dgst', '-binary', '-$alg', '-mac', 'HMAC', '-macopt', 'hexkey:' + key.toHex()]);
 			#if asys
 				(input:IdealSource).pipeTo(proc.stdin, {end: true}).handle(function(_) {});
-				return proc.stdout.all() >>
-					function(bytes:Bytes) return Base64.encode(bytes).sanitize();
+				return proc.stdout.all()
+					.next(function(chunk) return Base64.encode(chunk).sanitize());
 			#elseif sys
 				proc.stdin.write(Bytes.ofString(input));
 				proc.stdin.close();
@@ -49,15 +50,17 @@ class OpensslCrypto implements Crypto {
 				args.push('-passin');
 				args.push('pass:' + keys.passcode);
 			}
+			trace(args);
 			var proc = new Process('openssl', args);
 			#if asys
-				return File.saveContent(keyPath, keys.privateKey) >>
-					function(o) {
-						(input:IdealSource).pipeTo(proc.stdin, {end: true}).handle(function(_) {});
-						return proc.stdout.all() >>
-							function(bytes:Bytes) return FileSystem.deleteFile(keyPath) >>
-							function(_) return Base64.encode(bytes).sanitize();
-					}
+				return File.saveContent(keyPath, keys.privateKey)
+					.next(function(o) {
+						return (input:IdealSource).pipeTo(proc.stdin, {end: true})
+							.next(function(result) return result.toOutcome())
+							.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
+							.next(function(_) return proc.stdout.all())
+							.next(function(chunk) return FileSystem.deleteFile(keyPath).swap(Base64.encode(chunk).sanitize()));
+					});
 			#elseif sys
 				File.saveContent(keyPath, keys.privateKey);
 				proc.stdin.write(Bytes.ofString(input));
@@ -95,19 +98,20 @@ class OpensslCrypto implements Crypto {
 			var args = ['dgst', '-$alg', '-verify', keyPath];
 			var proc = new Process('openssl', ['dgst', '-$alg', '-verify', keyPath, '-signature', sigPath]);
 			#if asys
-				return Future.ofMany([
+				return Promise.inParallel([
 					File.saveContent(keyPath, keys.publicKey),
 					File.saveBytes(sigPath, Base64.decode(signature.unsanitize())),
-				]) >>
-					function(o) {
-						(input:IdealSource).pipeTo(proc.stdin, {end: true}).handle(function(_) {});
-						return proc.exitCode() >>
-							function(code:Int) return Future.ofMany([
+				])
+					.next(function(_) {
+						return (input:IdealSource).pipeTo(proc.stdin, {end: true})
+							.next(function(result) return result.toOutcome())
+							.next(function(allWritten) return allWritten ? Noise : new Error('Failed writing to stdin of the openssl process'))
+							.next(function(_) return proc.exitCode())
+							.next(function(code) return Promise.inParallel([
 								FileSystem.deleteFile(keyPath),
 								FileSystem.deleteFile(sigPath),
-							]) >>
-							function(_) return _result(code == 0);
-					}
+							]).swap(_result(code == 0)));
+					});
 			#elseif sys
 				File.saveContent(keyPath, keys.publicKey);
 				File.saveBytes(sigPath, Base64.decode(signature.unsanitize()));
