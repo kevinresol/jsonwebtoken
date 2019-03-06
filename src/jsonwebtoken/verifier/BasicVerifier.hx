@@ -29,12 +29,13 @@ class BasicVerifier implements Verifier {
 		
 		switch token.sanitize().split('.') {
 			case [h, p, s]:
-				var header:Header = Codec.decodeSegment(h);
+				var header:Header = try Codec.decodeSegment(h) catch(e:Dynamic) return Error.withData('Invalid JWT header', e);
+				
 				// if(header.typ != 'JWT') return new Error('Invalid typ header');
 				if(header.alg != algorithm.toString()) return new Error('Invalid algorithm');
 				
 				return crypto.verify('$h.$p', algorithm, s).next(function(sig):Outcome<T, Error> {
-					var payload:Claims = Codec.decodeSegment(p);
+					var payload:Claims = try Codec.decodeSegment(p) catch(e:Dynamic) return Failure(Error.withData('Invalid JWT payload', e));
 					
 					if(payload.nbf != null && Std.is(payload.nbf, Float) && Date.now().getTime() / 1000 < payload.nbf.toInt())
 						return Failure(new Error('Not available yet (nbf)'));
