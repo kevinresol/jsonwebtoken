@@ -32,14 +32,14 @@ script:
   - lix run travix python "${args[@]}"
   - lix run travix node "${args[@]}"
   - lix run travix js "${args[@]}"
-  - lix run travix java "${args[@]}"
-  - lix run travix cs "${args[@]}"
+  # - lix run travix java "${args[@]}"
+  # - lix run travix cs "${args[@]}"
   - lix run travix cpp "${args[@]}"
   - lix run travix php -D openssl
   - lix run travix interp -D openssl
   - lix run travix neko -D openssl
   - lix run travix python -D openssl
   - lix run travix node -lib asys -D openssl
-  - lix run travix java -D openssl
-  - lix run travix cs -D openssl
+  # - lix run travix java -D openssl
+  # - lix run travix cs -D openssl
   - lix run travix cpp -D openssl
