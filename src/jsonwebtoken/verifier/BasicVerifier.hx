@@ -50,7 +50,9 @@ class BasicVerifier implements Verifier {
 						}
 						if(options.aud != null) {
 							var aud:Dynamic = payload.aud;
-							if(Std.is(aud, String)) {
+							if(aud == null) {
+								return Failure(new Error('Missing audience (aud)'));	
+							} else if(Std.is(aud, String)) {
 								if(options.aud != aud) 
 									return Failure(new Error('Invalid audience (aud)'));
 							} else {
